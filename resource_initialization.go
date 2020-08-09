@@ -122,6 +122,26 @@ func defineSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
+		"google_secretmanager": {
+			Type: schema.TypeList,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"credentials_file": {
+						Type: schema.TypeString,
+					},
+					"project_id": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"secret_id": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+				},
+			},
+			Optional:   true,
+			ConfigMode: schema.SchemaConfigModeBlock,
+		},
 	}
 }
 
@@ -183,11 +203,6 @@ func initializeVault(data *schema.ResourceData, meta interface{}) error {
 			data.SetId("unknown cluster id")
 		}
 
-		data.Set("keys", initialization.Keys)
-		data.Set("keys_b64", initialization.KeysB64)
-		data.Set("recovery_keys", initialization.RecoveryKeys)
-		data.Set("recovery_keys_b64", initialization.RecoveryKeysB64)
-		data.Set("root_token", initialization.RootToken)
-		return nil
+		return StoreSecrets(initialization, data)
 	}, backoff.NewExponentialBackOff())
 }
