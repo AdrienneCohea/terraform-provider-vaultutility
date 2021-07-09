@@ -127,7 +127,8 @@ func defineSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"credentials_file": {
-						Type: schema.TypeString,
+						Type:     schema.TypeString,
+						Required: true,
 					},
 					"project_id": {
 						Type:     schema.TypeString,
@@ -141,6 +142,7 @@ func defineSchema() map[string]*schema.Schema {
 			},
 			Optional:   true,
 			ConfigMode: schema.SchemaConfigModeBlock,
+			ForceNew:   true,
 		},
 	}
 }
